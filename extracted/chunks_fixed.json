@@ -1,0 +1,218 @@
+[
+  {
+    "text": "PaperHelper: Knowledge-Based LLM QA Paper Reading Assistant Congrui Yin1, Evan Wei1, Zhongxing Zhang1, Zaifu Zhan2 1Department of Computer Science and Engineering, University of Minnesota, Twin Cities 2Department of Electrical and Computer Engineering, University of Minnesota, Twin Cities Emails: {yin00486, wei00329, zhan8889, zhan8023}@umn.edu Abstract In the paper, we introduce a paper reading as- sistant, PaperHelper, a potent tool designed to enhance the capabilities of researchers in effi- ciently browsing and understanding scientific literature. Utilizing the Retrieval-Augmented Generation (RAG) framework, PaperHelper ef- fectively minimizes hallucinations commonly encountered in large language models (LLMs), optimizing the extraction of accurate, high- quality knowledge. The implementation of ad- vanced technologies such as RAFT and RAG Fusion significantly boosts the performance, ac- curacy, and reliability of the LLMs-based litera- ture review process. Additionally, PaperHelper features a user-friendly interface that facilitates the batch downloading of documents and uses the Mermaid format to illustrate structural re- lationships between documents.",
+    "page": 1,
+    "section": null,
+    "strategy": "fixed"
+  },
+  {
+    "text": "LLMs-based litera- ture review process. Additionally, PaperHelper features a user-friendly interface that facilitates the batch downloading of documents and uses the Mermaid format to illustrate structural re- lationships between documents. Experimental results demonstrate that PaperHelper, based on a fine-tuned GPT-4 API, achieves an F1 Score of 60.04, with a latency of only 5.8 seconds, outperforming the basic RAG model by 7% in F1 Score. arXiv:2502.14271v1 [cs.CL] 20 Feb 2025 1 Introduction Researchers lack a robust tool to aid in literature reading, given the overwhelming volume and di- verse nature of academic literature. This challenge is compounded by time constraints and difficulties in accessing relevant material. A comprehensive tool integrating natural language processing (NLP) and information retrieval technologies is needed to offer personalized literature recommendations, summarizing, and key information extraction, facil- itating an efficient and comprehensive understand- ing of the latest research developments. Large language models (LLMs) have shown large potential",
+    "page": 1,
+    "section": null,
+    "strategy": "fixed"
+  },
+  {
+    "text": "offer personalized literature recommendations, summarizing, and key information extraction, facil- itating an efficient and comprehensive understand- ing of the latest research developments. Large language models (LLMs) have shown large potential in paper reading (Petroni et al., 2019). However, hallucination is common in LLMs, as they do not have external memory, which leads to limitations: they cannot learn new infor- mation, explain their answers, or avoid making Figure 1: PaperHelper: A Knowledge-Based LLM QA Paper Reading Assistant mistakes (Marcus, 2020). Hybrid models com- bine these language models with a kind of memory that can be updated and checked (Karpukhin et al., 2020). For example, models, such as REALM (Guu et al., 2020), ORQA (Lee et al., 2019), and Retrieval-Augmented Generation (RAG) (Lewis et al., 2020), have shown promise in answering questions (QA) from a wide range of topics. Therefore, in this project, based on RAG frame- work, to fully utilize the",
+    "page": 1,
+    "section": null,
+    "strategy": "fixed"
+  },
+  {
+    "text": "(Lewis et al., 2020), have shown promise in answering questions (QA) from a wide range of topics. Therefore, in this project, based on RAG frame- work, to fully utilize the power of LLMs and min- imize hallucination, we want to develop a tool called PaperHelper that can help researchers to ef- ficiently review scientific literature, as illustrated in Figure 1. The main contributions are summarized as follow 1. We design an end-to-end pipeline deployed us- ing Streamlit, which provides a user-friendly interface and supports batch importing. 2. We implement the basic RAG and RAG Fu- sion frameworks in PaperHelper, with the RAFT framework to effectively reduce the hal- lucinations and enhance retrieval relevance. 3. We do parallel generating, where generative tasks would be applied on references based on relevance ranking. 4. We integrate certain structural relationships with the extracted knowledge. 1",
+    "page": 1,
+    "section": null,
+    "strategy": "fixed"
+  },
+  {
+    "text": "tasks would be applied on references based on relevance ranking. 4. We integrate certain structural relationships with the extracted knowledge. 1",
+    "page": 1,
+    "section": null,
+    "strategy": "fixed"
+  },
+  {
+    "text": "2 Related Work RAG (Gao et al., 2023) techniques explore the integration of external knowledge base with the LLMs to address the limitations in LLMs, such as hallucination and nontransparent reasoning pro- cess. By leveraging external knowledge databases, RAG can enhance the accuracy and transparency of LLMs. Our research focuses on the potential of RAG to significantly improve the performance, reliability, transparency, and interactivity of LLMs, where RAG could be applied in a wide range of AI tasks, e.g., paper reading, paper writing, text extraction, etc. RAG. In the Open-Domain Question Answer- ing (ODQA) domain, Sun et al. (Sun et al., 2024) explored the LLMs with multiple roles to enhance ODQA. However, it faces the challenges of scala- bility and efficiency, which would hinder its capa- bility of leveraging the RAG framework to develop a user-friendly tool aimed at aiding researchers. Additionally, it has a significant computational bur- den related",
+    "page": 2,
+    "section": null,
+    "strategy": "fixed"
+  },
+  {
+    "text": "efficiency, which would hinder its capa- bility of leveraging the RAG framework to develop a user-friendly tool aimed at aiding researchers. Additionally, it has a significant computational bur- den related to LLMs. To boost the LLMs\u2019 perfor- mance in scientific research, L\u00e1la et al. (L\u00e1la et al., 2023) suggested a RAG-enhanced research agent, which relies heavily on scientific literature and struggles with computational inefficiencies, due to its reliance on modular components for iterative adjustments. Moreover, it could not simplify the user experience and limits its interactivity. Zhang et al. (Zhang et al., 2024) proposed the Retrieval Aug- mented Fine-Tuning (RAFT) framework, designed to improve the performance of pre-trained LLMs in domain-specific RAG settings, by teaching LLMs to effectively explore external documents in the inference process. Paper reading. With the development of RAG and demands of paper-reading assistant tools, there are several tools or research work aiming at improv- ing reading",
+    "page": 2,
+    "section": null,
+    "strategy": "fixed"
+  },
+  {
+    "text": "documents in the inference process. Paper reading. With the development of RAG and demands of paper-reading assistant tools, there are several tools or research work aiming at improv- ing reading efficiency, such as ScholarPhi (Head et al., 2021) and Papr Readr Bot (Foo et al., 2022). Jiang et al. (Jiang et al., 2024) proposed a new paper interpretation system for reading and inter- preting academic papers. However, it is limited by its flexibility and adaptability to the latest research findings, which could not effectively resolve the issues associated with outdated knowledge and hal- lucinations. Therefore, there is a lack of a more comprehensive and updated review of literature in paper reading task. Additionally, Semantic Reader Project (Lo et al., 2023) aims to enhance the litera- ture reading experience with the interactive inter- faces that provide relevant documents to readers, contributing to improving user experience and facil- itating a deeper understanding",
+    "page": 2,
+    "section": null,
+    "strategy": "fixed"
+  },
+  {
+    "text": "aims to enhance the litera- ture reading experience with the interactive inter- faces that provide relevant documents to readers, contributing to improving user experience and facil- itating a deeper understanding of academic papers. CiteRead (Rachatasumrit et al., 2022) enhanced the academic paper reading experience by integrating localized citation contexts, which help readers un- derstand how citations are used in later research but also enriches the reader\u2019s understanding of the paper\u2019s impact and relevance. However, these tools is not flexible and do not provide a personalized reading experience or precise ranking of related references for researchers. Without the use of RAG or additional techniques, these tools could easily trapped in hallucinations and outdated knowledge, leading to imprecise retrieval of papers. 3 Methods 3.1 Overview Our team has introduced the PaperHelper QA As- sistant, dedicated to leveraging the RAG framework to develop a tool that aids researchers in efficiently reviewing scientific literature.",
+    "page": 2,
+    "section": null,
+    "strategy": "fixed"
+  },
+  {
+    "text": "Methods 3.1 Overview Our team has introduced the PaperHelper QA As- sistant, dedicated to leveraging the RAG framework to develop a tool that aids researchers in efficiently reviewing scientific literature. The objective is to maximize the advantages of LLMs while minimiz- ing instances of hallucination, thereby swiftly ex- tracting high-quality, accurate knowledge to the greatest extent possible. Moreover, we aim to as- sist researchers by providing personalized literature recommendations, summarizations, and informa- tion extraction. As Figure 2 shows, the assistant utilizes three tools: search, gather evidence, and answer ques- tions. These tools enable it to find and parse rel- evant full-text research papers, identify specific sections in the paper that help answer the question, summarize those sections with the context of the question (called evidence), and then generate an answer based on the evidence. It is an agent so that the LLMs orchestrating the tools can adjust the input to",
+    "page": 2,
+    "section": null,
+    "strategy": "fixed"
+  },
+  {
+    "text": "of the question (called evidence), and then generate an answer based on the evidence. It is an agent so that the LLMs orchestrating the tools can adjust the input to paper searches, gather evidence with dif- ferent phrases, and assess if an answer is complete. We create an end-to-end pipeline, deployed us- ing Streamlit, which provides a user-friendly inter- face. In addition, it supports batch importing via URL link. 3.2 Implementation of RAG Fusion Compared to basic RAG shown in Figure 3, our sys- tem has integrated the RAG Fusion (Rackauckas, 2024) method, RAG Fusion integrates the capabil- ities of RAG with Reverse Rank Fusion through the generation of multiple queries, which are sub- 2",
+    "page": 2,
+    "section": null,
+    "strategy": "fixed"
+  },
+  {
+    "text": "Figure 2: Schematic diagram of PaperHelper Figure 3: RAG: The basic RAG simply splits the search prompt into simple words in a crude manner, and may produce certain spelling illusions without truly under- standing the user\u2019s intent. sequently reordered based on reciprocal scoring. This methodology facilitates the fusion of both documents and their corresponding scores. The effectiveness of RAG Fusion is assessed through manual evaluation, focusing on the accuracy, rel- evance, and comprehensiveness of the responses provided. From Figure 4, it can be seen that this approach enables RAG Fusion to deliver precise and comprehensive answers by contextualizing the original query from diverse perspectives. 3.3 Implementation of RAFT Our system also has integrated the RAFT (Zhang et al., 2024) method. This approach enhances the capability of LLMs in specific RAG tasks by lever- aging the core idea that if LLMs can \"learn\" doc- Figure 4: RAG Fusion: The design concept",
+    "page": 3,
+    "section": null,
+    "strategy": "fixed"
+  },
+  {
+    "text": "This approach enhances the capability of LLMs in specific RAG tasks by lever- aging the core idea that if LLMs can \"learn\" doc- Figure 4: RAG Fusion: The design concept of RAG Fusion encompasses auto-prompting capabilities, ad- dressing the common issue where users may struggle to articulate their search queries. RAG Fusion system- atically captures multiple dimensions of the user\u2019s in- formation needs, thereby delivering a comprehensive output that is enriched with an understanding of the user\u2019s intent. uments in advance, it can improve RAG\u2019s perfor- mance. We finetuned the OpenAI API using 5,000 domain-specific papers from the field of ma- chine learning to augment the knowledge of Pa- perHelper within the machine learning domain, thereby assisting machine learning scientists in reading papers more efficiently and accurately. This is an example of the effective implementa- tion of RAFT, when we use PaperHelper to read the paper \"Attention is All You",
+    "page": 3,
+    "section": null,
+    "strategy": "fixed"
+  },
+  {
+    "text": "in reading papers more efficiently and accurately. This is an example of the effective implementa- tion of RAFT, when we use PaperHelper to read the paper \"Attention is All You Need\" (2017, before RAG was implemented and LLMs were proposed): Input: What is RAG? RAG Fusion (without fine-tuning): RAG (Region Adjacency Graph): In image processing, this is a graphical data structure used to represent the rela- tionship between neighboring regions in an image, often used in image segmentation. 3",
+    "page": 3,
+    "section": null,
+    "strategy": "fixed"
+  },
+  {
+    "text": "Figure 5: Parallel Generating: Generative tasks could also be applied to references based on relevance ranking. Figure 6: Show the relationship between reference pa- pers. RAG Fusion (with RAFT): RAG (Retrieval- Augmented Generation): In the field of Large Lan- guage Model, RAG is a technique that combines information retrieval and generative modeling to improve the quality and accuracy of responses. We can find that through the RAFT method, the model integrates cutting-edge knowledge, enabling readers to further explore academic papers based on current information rather than providing outdated and misleading content. 3.4 Reference Knowledge Graph With the implementation of RAFT, we can extract the reference section at the end of articles more efficiently. First, we use RAG to traverse all the references in the article. Then, based on the knowl- edge from the LLMs, we refine the information using the top-k algorithm to identify the literature most relevant to the",
+    "page": 4,
+    "section": null,
+    "strategy": "fixed"
+  },
+  {
+    "text": "the references in the article. Then, based on the knowl- edge from the LLMs, we refine the information using the top-k algorithm to identify the literature most relevant to the article, as shown in Figure 5. As Figure 6 illustrates, we can use the Mermaid format in Markdown syntax to represent the rela- tionships between articles. The LLMs, based on the selected articles, will read the content using RAG and extract relationships based on the queries, generating Mermaid code, which only requires ren- dering to visually display the connections between the cited papers. We can find that through the RAFT method, the model integrates cutting-edge knowledge, enabling readers to further explore academic papers based on current information rather than providing outdated and misleading content. For example, When adding a reference, it can provide more accurate responses than GPT-4: Input: According to this paper, How to expand the context length? Paper",
+    "page": 4,
+    "section": null,
+    "strategy": "fixed"
+  },
+  {
+    "text": "outdated and misleading content. For example, When adding a reference, it can provide more accurate responses than GPT-4: Input: According to this paper, How to expand the context length? Paper Helper: The context length can be expanded by combining the two papers through a multi-stage contrastive training, utilizing a vast collection of weak pairs for domain generalization and super- vised finetuning with annotated text triples to en- hance the model\u2019s performance across various tasks (pdf/2310.19923v4.Jina_Embeddings_2_8192, page 1). Additionally, the observation that longer sequence lengths may not always yield better out- comes due to the initial paragraph of a Wikipedia article typically mentioning the country the city is in suggests that an increase in sequence length doesn\u2019t always result in improved performance (pdf/2310.19923v4.Jina_Embeddings_2_8192, page 8). GPT-4: Expanding the context length in a text embedding model involves adjusting parameters or hyper-parameters related to the model architecture or the input data. Here are",
+    "page": 4,
+    "section": null,
+    "strategy": "fixed"
+  },
+  {
+    "text": "performance (pdf/2310.19923v4.Jina_Embeddings_2_8192, page 8). GPT-4: Expanding the context length in a text embedding model involves adjusting parameters or hyper-parameters related to the model architecture or the input data. Here are some general strategies you can consider: \u2022 Model Architecture: Some deep learning mod- els, such as Transformers, allow for longer context lengths by adjusting the number of layers or the attention mechanism. Increasing the number of layers can potentially capture more contextual information, but it also in- creases the computational cost. \u2022 Model Architecture: Some deep learning mod- els, such as Transformers, allow for longer context lengths by adjusting the number of layers or the attention mechanism. Increasing the number of layers can potentially capture more contextual information, but it also in- creases the computational cost. \u2022 Hardware Acceleration: Using specialized hardware such as GPUs or TPUs can enable you to handle larger context lengths by speed- ing up computation",
+    "page": 4,
+    "section": null,
+    "strategy": "fixed"
+  },
+  {
+    "text": "also in- creases the computational cost. \u2022 Hardware Acceleration: Using specialized hardware such as GPUs or TPUs can enable you to handle larger context lengths by speed- ing up computation and memory access. 4 Experimental Results We evaluate our system performance on 100 papers (test set) from MLArxivPapers (arXiv.org submit- ters, 2024), setting k = 10 (top-k), generating 500 tokens, and using GPT4-32k (as Table 1) shows and Llama3-8b (as Table 2 shows). 4",
+    "page": 4,
+    "section": null,
+    "strategy": "fixed"
+  },
+  {
+    "text": "In our study, we employ two key metrics: pre- cision and recall. Precision quantifies the pro- portion of retrieved results that are relevant, while recall assesses the percentage of all rele- vant documents that the retrieval system suc- cessfully identifies. These metrics are integrated to calculate the F1 Score, which serves as a har- monic mean of precision and recall, providing a balanced measure of the retrieval system\u2019s accuracy and completeness. F1 Score = 2 \u00b7 (Precision \u00b7 Recall) Precision + Recall Table 1: The Performance of GPT4 API Methods F1 (%) Latency (s) RAG 53.14 5.7 RAG Fusion 58.16 5.6 RAG Fusion + RAFT 60.04 5.8 Table 2: The Performance of Llama3-8b Methods F1 (%) Latency (s) RAG 46.89 14.6 RAG Fusion 47.81 13.9 RAG Fusion + RAFT 49.44 14.7 From the quantitative comparison, we can see that with the assistance of RAG, the F1 score is higher than",
+    "page": 5,
+    "section": null,
+    "strategy": "fixed"
+  },
+  {
+    "text": "14.6 RAG Fusion 47.81 13.9 RAG Fusion + RAFT 49.44 14.7 From the quantitative comparison, we can see that with the assistance of RAG, the F1 score is higher than the baseline model, and the RAG Fu- sion + RAFT model achieves the best F1 score, showcasing exploiting multiple knowledge extrac- tion could effectively enhance the LLMs\u2019 retrieval capacity. We also test different vector databases such as Faiss (as Table 3 shows), Milvus (as Table 4 shows) and Qdrant (as Table 5 shows) with GPT4 API, here are the results: Table 3: The Performance of Faiss Vector Database Methods F1 (%) Latency (s) RAG 53.14 5.7 RAG Fusion 58.16 5.6 RAG Fusion + RAFT 60.04 5.8 We have found that the choice of vector database does not fundamentally affect the outcomes, except that Milvus is slightly faster due to its support for GPU acceleration. This indicates that the perfor- mance",
+    "page": 5,
+    "section": null,
+    "strategy": "fixed"
+  },
+  {
+    "text": "the choice of vector database does not fundamentally affect the outcomes, except that Milvus is slightly faster due to its support for GPU acceleration. This indicates that the perfor- mance of RAG largely depends on the model, the data itself, and the data distribution strategy. Fur- thermore, we provide a more detailed discussion of the limitations and failure cases in 5.4 Limitations. Table 4: The Performance of Milvus Vector DataBase Methods F1 (%) Latency (s) RAG 53.15 5.5 RAG Fusion 58.17 5.4 RAG Fusion + RAFT 60.03 5.6 Table 5: Performance of Qdrant Vector Database Methods F1 (%) Latency (s) RAG 53.12 5.8 RAG Fusion 58.13 5.7 RAG Fusion + RAFT 60.05 5.8 5 Discussion Since RAG started getting hot last year, task gen- eralization in the field has advanced significantly. Enhancing our comprehension of prompts and in- structions, along with pinpointing failure patterns, will enable us to develop more",
+    "page": 5,
+    "section": null,
+    "strategy": "fixed"
+  },
+  {
+    "text": "last year, task gen- eralization in the field has advanced significantly. Enhancing our comprehension of prompts and in- structions, along with pinpointing failure patterns, will enable us to develop more robust and resilient NLP systems for future applications. 5.1 Replicability Our results were obtained by using the OpenAI API and Meta-Llama-3-8B-Instruct model, which is available on Huggingface. These models can be easily accessed by others as well. In addition, each of our modules is well encapsulated, and deployed via Streamlit, and a detailed README document was written to teach people how to deploy it, allow- ing for easy reproduction. 5.2 Datasets We use a partial of the MLArxivPapers dataset (Due to limitations in resources, including but not limited to money, computational power, and time, we selected only about 5,000 papers) to finetune our model, which is an unlabelled collection of over 104K papers related to machine learning and published on",
+    "page": 5,
+    "section": null,
+    "strategy": "fixed"
+  },
+  {
+    "text": "computational power, and time, we selected only about 5,000 papers) to finetune our model, which is an unlabelled collection of over 104K papers related to machine learning and published on arXiv.org between 2007-2020. The dataset includes around 94K papers (for which La- TeX source code is available) in a structured form in which each paper is split into a title, abstract, sections, paragraphs and references. Additionally, the dataset contains over 277K tables extracted from the LaTeX papers. Compared to other com- monly used datasets like arXivQA or arXivRaw, 5",
+    "page": 5,
+    "section": null,
+    "strategy": "fixed"
+  },
+  {
+    "text": "the uniqueness of our dataset lies in its exclusive se- lection of machine learning papers from the field of computer science. This dataset provides machine learning researchers with a better platform to under- stand domain-specific knowledge, enhancing the generalizability across the field. It allows for the training and testing of NLP models on the unique categorizations of arXiv papers. 5.3 Ethics Our project aims to explore whether LLMs can as- sist computer scientists in becoming more efficient at reading academic papers, and has no direct harm or risk to society. While LLMs have the potential to reduce reading time, thereby enhancing research efficiency, they still exhibit significant issues with hallucinations when dealing with complex ques- tions that require human subjective intelligence. The primary limitations of using LLMs are due to training data and the inherent structure of LLMs themselves; hallucination issues are inevitable and can lead to erroneous perspectives, potentially",
+    "page": 6,
+    "section": null,
+    "strategy": "fixed"
+  },
+  {
+    "text": "intelligence. The primary limitations of using LLMs are due to training data and the inherent structure of LLMs themselves; hallucination issues are inevitable and can lead to erroneous perspectives, potentially im- pacting researchers\u2019 judgments. For newer domain- specific terms (such as \"RAG\"), if the relevant pa- pers are not provided, it might incorrectly interpret these terms (e.g., as \"Region Adjacency Graph,\" a graphical data structure used for representing relationships between adjacent regions in images, commonly used in image segmentation). 5.4 Limitations Though PaperHelper is useful for machine learn- ing scientists, the hallucinations inherent in LLMs always exist and can still lead to some misinforma- tion. Our system has the following limitations: \u2022 RAG relies excessively on the information in the input text, and it typically performs poorly when dealing with information not present in the text: Consider the scenario that we are building a Harry Potter Q&A system. We imported",
+    "page": 6,
+    "section": null,
+    "strategy": "fixed"
+  },
+  {
+    "text": "input text, and it typically performs poorly when dealing with information not present in the text: Consider the scenario that we are building a Harry Potter Q&A system. We imported all Harry Potter stories into a vector database. Now, a question arises: how many heads does a dog have? Most likely, the system will answer three, because there are mentions of a huge dog that has three heads, and the system has no idea how many heads a normal dog may have. \u2022 Every process of RAG system is lossy: The process of RAG involves chunking the text and generating embeddings for these chunks, then retrieving the chunks through seman- tic similarity search. Finally, it generates a response based on the text from the top-k chunks. All these processes are lossy, which means there is no guarantee that all informa- tion will be preserved in the final result. \u2022 PaperHelper",
+    "page": 6,
+    "section": null,
+    "strategy": "fixed"
+  },
+  {
+    "text": "the text from the top-k chunks. All these processes are lossy, which means there is no guarantee that all informa- tion will be preserved in the final result. \u2022 PaperHelper is unable to recognize figures, which are often the most crucial part of an article: Existing methods face signifi- cant challenges in converting paper images into vectors due to three primary limitations: (1) The information in current image data is dense and abstract, exceeding the interpreta- tive capabilities of LLMs. (2) Even the most advanced multimodal models, like GPT-4V, struggle to comprehensively extract and cor- relate the figures, tables, and their intercon- nections found within articles. (3) A notable absence of datasets enriched with expert feed- back hampers progress, as many paper im- ages are not even identifiable within their own articles, and their full meaning can only be extracted by humans. Unfortunately, such en- riched datasets are currently unavailable",
+    "page": 6,
+    "section": null,
+    "strategy": "fixed"
+  },
+  {
+    "text": "many paper im- ages are not even identifiable within their own articles, and their full meaning can only be extracted by humans. Unfortunately, such en- riched datasets are currently unavailable on- line. Consequently, while the RAG system performs well with pure text, the true value of an article often resides in its visual elements, which remain inadequately addressed. 6 Conclusion In summary, our project successfully developed PaperHelper, a robust tool designed to enhance researchers\u2019 ability to efficiently navigate and un- derstand scientific literature. Utilizing the RAG framework, PaperHelper effectively reduces the hallucinations common in LLMs and optimizes the extraction of accurate, high-quality knowledge. Our implementation of advanced techniques such as RAFT and RAG Fusion has significantly im- proved the performance, accuracy, and reliability of LLM-based literature review processes. We have also designed a user-friendly interface that facili- tates batch downloading of literature and illustrates the relationships between documents using the",
+    "page": 6,
+    "section": null,
+    "strategy": "fixed"
+  },
+  {
+    "text": "accuracy, and reliability of LLM-based literature review processes. We have also designed a user-friendly interface that facili- tates batch downloading of literature and illustrates the relationships between documents using the Mer- maid format. Furthermore, we evaluated the system using a fine-tuned GPT4 API on a test set, primarily using the F1 Score as our evaluation metric. Experimen- tal results show that PaperHelper performs better with the combination of RAG Fusion and RAFT methods compared to Basic RAG. The system\u2019s 6",
+    "page": 6,
+    "section": null,
+    "strategy": "fixed"
+  },
+  {
+    "text": "performance highly depends on the model, data, and data distribution itself, rather than on which vector database is used. Although our system has achieved significant results, there is still consider- able room for improvement. Our system does not support reading Figures and cannot display content not present in the articles. However, our work still provides substantial domain-specific knowledge to researchers. With the increasing frequency of pub- lications in machine learning today, it could benefit researchers by allowing them to quickly read and understand the connections between articles in a domain. As the models continue to advance, we anticipate that enhanced multimodal models will help us read and fully understand the content of Fig- ures, making them more expert tools for scientific research. Additionally, we hope it provides a good experience for both novice and veteran machine learning researchers, offering answers to questions and related justifications, thus contributing to a more",
+    "page": 7,
+    "section": null,
+    "strategy": "fixed"
+  },
+  {
+    "text": "scientific research. Additionally, we hope it provides a good experience for both novice and veteran machine learning researchers, offering answers to questions and related justifications, thus contributing to a more pleasant and suitable experience for scientific advancement worldwide. References arXiv.org submitters. 2024. arxiv dataset. Michelle Xiao-Lin Foo, Luca Della Libera, and Ilhan Aslan. 2022. Papr readr bot: A conversational agent to read research papers. In Proceedings of the 4th Conference on Conversational User Interfaces, pages 1\u20134. Yunfan Gao, Yun Xiong, Xinyu Gao, Kangxiang Jia, Jinliu Pan, Yuxi Bi, Yi Dai, Jiawei Sun, and Haofen Wang. 2023. Retrieval-augmented generation for large language models: A survey. arXiv preprint arXiv:2312.10997. Kelvin Guu, Kenton Lee, Zora Tung, Panupong Pasu- pat, and Mingwei Chang. 2020. Retrieval augmented language model pre-training. In International confer- ence on machine learning, pages 3929\u20133938. PMLR. Andrew Head, Kyle Lo, Dongyeop Kang, Raymond Fok, Sam Skjonsberg, Daniel S Weld, and Marti",
+    "page": 7,
+    "section": null,
+    "strategy": "fixed"
+  },
+  {
+    "text": "Retrieval augmented language model pre-training. In International confer- ence on machine learning, pages 3929\u20133938. PMLR. Andrew Head, Kyle Lo, Dongyeop Kang, Raymond Fok, Sam Skjonsberg, Daniel S Weld, and Marti A Hearst. 2021. Augmenting scientific papers with just- in-time, position-sensitive definitions of terms and symbols. In Proceedings of the 2021 CHI Conference on Human Factors in Computing Systems, pages 1\u2013 18. Feng Jiang, Kuang Wang, and Haizhou Li. 2024. Bridging research and readers: A multi-modal auto- mated academic papers interpretation system. arXiv preprint arXiv:2401.09150. Vladimir Karpukhin, Barlas O\u02d8guz, Sewon Min, Patrick Lewis, Ledell Wu, Sergey Edunov, Danqi Chen, and Wen-tau Yih. 2020. Dense passage retrieval for open-domain question answering. arXiv preprint arXiv:2004.04906. Jakub L\u00e1la, Odhran O\u2019Donoghue, Aleksandar Shtedrit- ski, Sam Cox, Samuel G Rodriques, and Andrew D White. 2023. Paperqa: Retrieval-augmented gener- ative agent for scientific research. arXiv preprint arXiv:2312.07559. Kenton Lee, Ming-Wei Chang, and Kristina Toutanova. 2019. Latent retrieval",
+    "page": 7,
+    "section": null,
+    "strategy": "fixed"
+  },
+  {
+    "text": "Cox, Samuel G Rodriques, and Andrew D White. 2023. Paperqa: Retrieval-augmented gener- ative agent for scientific research. arXiv preprint arXiv:2312.07559. Kenton Lee, Ming-Wei Chang, and Kristina Toutanova. 2019. Latent retrieval for weakly supervised open domain question answering. arXiv preprint arXiv:1906.00300. Patrick Lewis, Ethan Perez, Aleksandra Piktus, Fabio Petroni, Vladimir Karpukhin, Naman Goyal, Hein- rich K\u00fcttler, Mike Lewis, Wen-tau Yih, Tim Rock- t\u00e4schel, et al. 2020. Retrieval-augmented generation for knowledge-intensive nlp tasks. Advances in Neu- ral Information Processing Systems, 33:9459\u20139474. Kyle Lo, Joseph Chee Chang, Andrew Head, Jonathan Bragg, Amy X Zhang, Cassidy Trier, Chloe Anastasi- ades, Tal August, Russell Authur, Danielle Bragg, et al. 2023. The semantic reader project: Aug- menting scholarly documents through ai-powered interactive reading interfaces. arXiv preprint arXiv:2303.14334. Gary Marcus. 2020. The next decade in ai: four steps towards robust artificial intelligence. arXiv preprint arXiv:2002.06177. Fabio Petroni, Tim Rockt\u00e4schel, Patrick Lewis, An- ton Bakhtin, Yuxiang Wu, Alexander",
+    "page": 7,
+    "section": null,
+    "strategy": "fixed"
+  },
+  {
+    "text": "arXiv:2303.14334. Gary Marcus. 2020. The next decade in ai: four steps towards robust artificial intelligence. arXiv preprint arXiv:2002.06177. Fabio Petroni, Tim Rockt\u00e4schel, Patrick Lewis, An- ton Bakhtin, Yuxiang Wu, Alexander H Miller, and Sebastian Riedel. 2019. Language models as knowl- edge bases? arXiv preprint arXiv:1909.01066. Napol Rachatasumrit, Jonathan Bragg, Amy X Zhang, and Daniel S Weld. 2022. Citeread: Integrating lo- calized citation contexts into scientific paper reading. In 27th International Conference on Intelligent User Interfaces, pages 707\u2013719. Zackary Rackauckas. 2024. Rag-fusion: A new take on retrieval augmented generation. International Jour- nal on Natural Language Computing, 13(1):37\u201347. Hongda Sun, Yuxuan Liu, Chengwei Wu, Haiyu Yan, Cheng Tai, Xin Gao, Shuo Shang, and Rui Yan. 2024. Harnessing multi-role capabilities of large language models for open-domain question answering. arXiv preprint arXiv:2403.05217. Tianjun Zhang, Shishir G Patil, Naman Jain, Sheng Shen, Matei Zaharia, Ion Stoica, and Joseph E Gonza- lez. 2024. Raft: Adapting language",
+    "page": 7,
+    "section": null,
+    "strategy": "fixed"
+  },
+  {
+    "text": "models for open-domain question answering. arXiv preprint arXiv:2403.05217. Tianjun Zhang, Shishir G Patil, Naman Jain, Sheng Shen, Matei Zaharia, Ion Stoica, and Joseph E Gonza- lez. 2024. Raft: Adapting language model to domain specific rag. arXiv preprint arXiv:2403.10131. 7",
+    "page": 7,
+    "section": null,
+    "strategy": "fixed"
+  }
+]
